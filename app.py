@@ -187,7 +187,7 @@ def main():
     if args.run_all_records:
         for record in os.listdir(args.path):
             if record.endswith('.hea'):
-                record_base = record[:-4]  # elimină '.hea'
+                record_base = record[:-4]
                 channel_sample, record_name = load_ecg_channel(
                     args.path, record_base, args.channel, args.start, args.end
                 )
