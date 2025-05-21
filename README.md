@@ -71,7 +71,7 @@ python app.py --path physionet.org/files/chfdb/1.0.0/ --record chf02 --channel 1
 - `grafice/` – Directorul unde se salvează graficele generate
 - `README.md` – Acest fișier
 
-## Autor
+## Autori
 
 Cristi Miloiu - 442A
 Duta Florin - 442A
