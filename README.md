@@ -1,4 +1,6 @@
-# depi-project
+# Proiect Decizie și Estimare în Prelucrarea Informației
+
+## Descriere
 
 Acest proiect realizează analiza și vizualizarea semnalelor ECG (electrocardiogramă) din baza de date PhysioNet, oferind statistici de bază și diverse grafice utile pentru interpretarea semnalului.
 
