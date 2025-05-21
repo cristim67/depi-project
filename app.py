@@ -19,15 +19,11 @@ def ensure_dir(directory: str) -> None:
 
 
 def save_plot(fig, filename: str, save: bool = True) -> None:
-    """Salvează figura în directorul grafice/. Dacă există, adaugă UUID."""
+    """Salvează figura în directorul grafice/. Suprascrie dacă există."""
     if not save:
         return
     ensure_dir('grafice')
-    base, ext = os.path.splitext(filename)
     out_path = os.path.join('grafice', filename)
-    if os.path.exists(out_path):
-        unique = uuid.uuid4().hex[:8]
-        out_path = os.path.join('grafice', f"{base}-{unique}{ext}")
     fig.savefig(out_path)
     logger.info(f"Grafic salvat: {out_path}")
 
