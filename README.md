@@ -78,13 +78,48 @@ python3 app.py --run_all_records True
 
 ## Structura proiectului
 
-- `app.py` – Scriptul principal pentru analiză și ploturi
-- `grafice/` – Directorul unde se salvează graficele generate
-- `requirements.txt` – Dependințe Python
-- `.gitignore` – Fișierul de ignorare pentru Git
-- `LICENSE` – Licență
-- `physionet.org` – Directorul cu fișierele PhysioNet
-- `README.md` – Acest fișier
+```bash
+├── app.py
+├── grafice
+│   ├── autocorrelation
+│   │   ├── chf01.png
+│   │   ├── chf02.png
+│   │   ├── ... (până la chf15.png)
+│   ├── ecdf
+│   │   ├── chf01.png
+│   │   ├── ... (până la chf15.png)
+│   ├── ecg_signal
+│   │   ├── chf01.png
+│   │   ├── ... (până la chf15.png)
+│   ├── pdf
+│   │   ├── chf01.png
+│   │   ├── ... (până la chf15.png)
+│   └── psd
+│       ├── chf01.png
+│       ├── ... (până la chf15.png)
+├── LICENSE
+├── physionet.org
+│   ├── files
+│   │   └── chfdb
+│   │       └── 1.0.0
+│   │           ├── ANNOTATORS
+│   │           ├── chf01.dat
+│   │           ├── chf01.ecg
+│   │           ├── chf01.hea
+│   │           ├── chf01.hea-
+│   │           ├── chf02.dat
+│   │           ├── chf02.ecg
+│   │           ├── chf02.ecg-
+│   │           ├── chf02.hea
+│   │           ├── chf02.hea-
+│   │           ├── ... (până la chf15.hea-)
+│   │           ├── index.html
+│   │           ├── RECORDS
+│   │           └── SHA256SUMS.txt
+│   └── robots.txt
+├── README.md
+└── requirements.txt
+```
 
 ## Autori
 
