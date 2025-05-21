@@ -18,27 +18,30 @@ Acest proiect realizează analiza și vizualizarea semnalelor ECG (electrocardio
 ## Instalare
 
 1. Clonează acest repository:
-   ```bash
+
+```bash
    git clone https://github.com/cristim67/depi-project.git
    cd depi-project
-   ```
+```
 
 2. Instalează dependențele necesare:
-   ```bash
-   pip install -r requirements.txt
-   ```
+
+```bash
+   pip3 install -r requirements.txt
+```
 
    Dacă nu ai un fișier `requirements.txt`, instalează manual:
-   ```bash
-   pip install numpy matplotlib wfdb loguru scipy
-   ```
+
+```bash
+   pip3 install numpy matplotlib wfdb loguru scipy
+```
 
 ## Utilizare
 
 Scriptul principal este `app.py`. Poate fi rulat din linia de comandă cu diverse argumente:
 
 ```bash
-python app.py --path <cale_catre_physionet> --record <id_fisier> --channel <canal> --start <start> --end <end> --fs <frecventa> --save <True/False>
+python3 app.py --path <cale_catre_physionet> --record <id_fisier> --channel <canal> --start <start> --end <end> --fs <frecventa> --save <True/False>
 ```
 
 ### Exemple
@@ -46,13 +49,19 @@ python app.py --path <cale_catre_physionet> --record <id_fisier> --channel <cana
 Rulare cu valorile implicite (segment din `chf01`):
 
 ```bash
-python app.py
+python3 app.py
 ```
 
 Rulare cu parametri personalizați:
 
 ```bash
-python app.py --path physionet.org/files/chfdb/1.0.0/ --record chf02 --channel 1 --start 5000 --end 10000 --fs 250 --save True
+python3 app.py --path physionet.org/files/chfdb/1.0.0/ --record chf02 --channel 1 --start 5000 --end 10000 --fs 250 --save True
+```
+
+Rulare cu toate fișierele din directorul PhysioNet:
+
+```bash
+python3 app.py --run_all_records True
 ```
 
 ### Argumente
@@ -64,15 +73,21 @@ python app.py --path physionet.org/files/chfdb/1.0.0/ --record chf02 --channel 1
 - `--end`: Indexul de final pentru segmentul analizat (default: 15000)
 - `--fs`: Frecvența de eșantionare în Hz (default: 250)
 - `--save`: Salvează graficele în directorul `grafice/` (default: True)
+- `--run_all_records`: Rulează toate fișierele din directorul PhysioNet (default: False)
+- `--help`: Afisează parametrii pentru script
 
 ## Structura proiectului
 
 - `app.py` – Scriptul principal pentru analiză și ploturi
 - `grafice/` – Directorul unde se salvează graficele generate
+- `requirements.txt` – Dependințe Python
+- `.gitignore` – Fișierul de ignorare pentru Git
+- `LICENSE` – Licență
+- `physionet.org` – Directorul cu fișierele PhysioNet
 - `README.md` – Acest fișier
 
 ## Autori
 
 Cristi Miloiu - 442A
 
-Duta Florin - 442A
+Duta Florin - 442A 
