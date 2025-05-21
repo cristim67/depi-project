@@ -22,7 +22,17 @@ def save_plot(fig, filename: str, save: bool = True) -> None:
     """Salvează figura în directorul grafice/. Suprascrie dacă există."""
     if not save:
         return
-    ensure_dir('grafice')
+    
+    for subdir in [
+        "grafice",
+        "grafice/ecg_signal",
+        "grafice/ecdf",
+        "grafice/pdf",
+        "grafice/autocorrelation",
+        "grafice/psd"
+    ]:
+        ensure_dir(subdir)
+
     out_path = os.path.join('grafice', filename)
     fig.savefig(out_path)
     logger.info(f"Grafic salvat: {out_path}")
@@ -35,23 +45,23 @@ def ecdf(data: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     return x, y
 
 
-def plot_ecg_signal(signal: np.ndarray, fs: int, record_name: str, save: bool = True, show: bool = True) -> None:
+def plot_ecg_signal(signal: np.ndarray, fs: int, record_id: str, save: bool = True, show: bool = True) -> None:
     """Plotează semnalul ECG."""
     t = np.arange(len(signal)) / fs
     fig = plt.figure(figsize=(12, 4))
     plt.plot(t, signal, color='blue')
-    plt.title(f'Semnalul ECG (canal {record_name})')
+    plt.title(f'Semnalul ECG (canal {record_id})')
     plt.xlabel('Timp (secunde)')
     plt.ylabel('Amplitude (mV)')
     plt.grid(True)
     plt.tight_layout()
-    save_plot(fig, 'ecg_signal.png', save)
+    save_plot(fig, f'ecg_signal/{record_id}.png', save)
     if show:
         plt.show()
     plt.close()
 
 
-def plot_ecdf(signal: np.ndarray, save: bool = True, show: bool = True) -> None:
+def plot_ecdf(signal: np.ndarray, record_id: str, save: bool = True, show: bool = True) -> None:
     """Plotează ECDF pentru semnal."""
     x_ecdf, y_ecdf = ecdf(signal)
     fig = plt.figure(figsize=(8, 4))
@@ -61,13 +71,13 @@ def plot_ecdf(signal: np.ndarray, save: bool = True, show: bool = True) -> None:
     plt.ylabel('F(x)')
     plt.grid(True)
     plt.tight_layout()
-    save_plot(fig, 'ecdf.png', save)
+    save_plot(fig, f'ecdf/{record_id}.png', save)
     if show:
         plt.show()
     plt.close()
 
 
-def plot_pdf(signal: np.ndarray, save: bool = True, show: bool = True) -> None:
+def plot_pdf(signal: np.ndarray, record_id: str, save: bool = True, show: bool = True) -> None:
     """Plotează PDF estimat cu histograma și KDE."""
     kde = gaussian_kde(signal)
     x_vals = np.linspace(np.min(signal), np.max(signal), 1000)
@@ -80,13 +90,13 @@ def plot_pdf(signal: np.ndarray, save: bool = True, show: bool = True) -> None:
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
-    save_plot(fig, 'pdf.png', save)
+    save_plot(fig, f'pdf/{record_id}.png', save)
     if show:
         plt.show()
     plt.close()
 
 
-def plot_autocorrelation(signal: np.ndarray, save: bool = True, show: bool = True) -> None:
+def plot_autocorrelation(signal: np.ndarray, record_id: str, save: bool = True, show: bool = True) -> None:
     """Plotează funcția de autocorelatie."""
     acorr = correlate(signal - np.mean(signal), signal - np.mean(signal), mode='full')
     acorr = acorr[acorr.size // 2:]
@@ -98,13 +108,13 @@ def plot_autocorrelation(signal: np.ndarray, save: bool = True, show: bool = Tru
     plt.ylabel('Autocorelatie')
     plt.grid(True)
     plt.tight_layout()
-    save_plot(fig, 'autocorrelation.png', save)
+    save_plot(fig, f'autocorrelation/{record_id}.png', save)
     if show:
         plt.show()
     plt.close()
 
 
-def plot_psd(signal: np.ndarray, fs: int, save: bool = True, show: bool = True) -> None:
+def plot_psd(signal: np.ndarray, fs: int, record_id: str, save: bool = True, show: bool = True) -> None:
     """Plotează densitatea spectrală de putere (PSD)."""
     f, Pxx = welch(signal, fs=fs, nperseg=2048)
     fig = plt.figure(figsize=(10, 4))
@@ -114,7 +124,7 @@ def plot_psd(signal: np.ndarray, fs: int, save: bool = True, show: bool = True) 
     plt.ylabel('Densitate de putere (V^2/Hz)')
     plt.grid(True)
     plt.tight_layout()
-    save_plot(fig, 'psd.png', save)
+    save_plot(fig, f'psd/{record_id}.png', save)
     if show:
         plt.show()
     plt.close()
@@ -141,6 +151,13 @@ def load_ecg_channel(record_path: str, record_id: str, channel: int = 0, start: 
     signal = record.p_signal[:, channel]
     return signal[start:end], record_name
 
+def generate_graphs(signal: np.ndarray, fs: int, record_id: str, save: bool = True, show: bool = True) -> None:
+    """Generează toate graficele pentru un semnal ECG."""
+    plot_ecg_signal(signal, fs, record_id, save, show)
+    plot_ecdf(signal, record_id, save, show)
+    plot_pdf(signal, record_id, save, show)
+    plot_autocorrelation(signal, record_id, save, show)
+    plot_psd(signal, fs, record_id, save, show)
 
 def main():
     default_path = 'physionet.org/files/chfdb/1.0.0/'
@@ -150,6 +167,7 @@ def main():
     default_end = 15000
     default_fs = 250
     default_save = True
+    default_run_all_records = False
 
     parser = argparse.ArgumentParser(description="Analiză și ploturi pentru semnal ECG din PhysioNet.")
     parser.add_argument('--path', type=str, default=default_path, help='Calea către directorul cu fișiere PhysioNet')
@@ -159,18 +177,25 @@ def main():
     parser.add_argument('--end', type=int, default=default_end, help='Indexul de final pentru segmentul analizat')
     parser.add_argument('--fs', type=int, default=default_fs, help='Frecvența de eșantionare (Hz)')
     parser.add_argument('--save', type=lambda x: (str(x).lower() == 'true'), default=default_save, help='Salvează graficele în directorul grafice/ (default: True)')
+    parser.add_argument('--run_all_records', type=lambda x: (str(x).lower() == 'true'), default=default_run_all_records, help='Rulează toate fișierele din directorul PhysioNet (default: False)')
     args = parser.parse_args()
 
     channel_sample, record_name = load_ecg_channel(
         args.path, args.record, args.channel, args.start, args.end
     )
 
-    print_statistics(channel_sample, record_name)
-    plot_ecg_signal(channel_sample, args.fs, record_name, save=args.save, show=True)
-    plot_ecdf(channel_sample, save=args.save, show=True)
-    plot_pdf(channel_sample, save=args.save, show=True)
-    plot_autocorrelation(channel_sample, save=args.save, show=True)
-    plot_psd(channel_sample, args.fs, save=args.save, show=True)
+    if args.run_all_records:
+        for record in os.listdir(args.path):
+            if record.endswith('.hea'):
+                record_base = record[:-4]  # elimină '.hea'
+                channel_sample, record_name = load_ecg_channel(
+                    args.path, record_base, args.channel, args.start, args.end
+                )
+                print_statistics(channel_sample, record_name)
+                generate_graphs(channel_sample, args.fs, record_base, save=args.save, show=True)
+    else:
+        print_statistics(channel_sample, record_name)
+        generate_graphs(channel_sample, args.fs, args.record, save=args.save, show=True)
 
 
 if __name__ == "__main__":
