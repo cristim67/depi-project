@@ -147,14 +147,22 @@ def load_ecg_channel(record_path: str, record_id: str, channel: int = 0, start: 
 
 
 def main():
+    default_path = 'physionet.org/files/chfdb/1.0.0/'
+    default_record = 'chf01'
+    default_channel = 0
+    default_start = 10000
+    default_end = 15000
+    default_fs = 250
+    default_save = True
+
     parser = argparse.ArgumentParser(description="Analiză și ploturi pentru semnal ECG din PhysioNet.")
-    parser.add_argument('--path', type=str, default='physionet.org/files/chfdb/1.0.0/', help='Calea către directorul cu fișiere PhysioNet')
-    parser.add_argument('--record', type=str, default='chf01', help='ID-ul fișierului de analizat (ex: chf01)')
-    parser.add_argument('--channel', type=int, default=0, help='Canalul ECG de analizat (default: 0)')
-    parser.add_argument('--start', type=int, default=10000, help='Indexul de start pentru segmentul analizat')
-    parser.add_argument('--end', type=int, default=15000, help='Indexul de final pentru segmentul analizat')
-    parser.add_argument('--fs', type=int, default=250, help='Frecvența de eșantionare (Hz)')
-    parser.add_argument('--save', type=lambda x: (str(x).lower() == 'true'), default=True, help='Salvează graficele în directorul grafice/ (default: True)')
+    parser.add_argument('--path', type=str, default=default_path, help='Calea către directorul cu fișiere PhysioNet')
+    parser.add_argument('--record', type=str, default=default_record, help='ID-ul fișierului de analizat (ex: chf01)')
+    parser.add_argument('--channel', type=int, default=default_channel, help='Canalul ECG de analizat (default: 0)')
+    parser.add_argument('--start', type=int, default=default_start, help='Indexul de start pentru segmentul analizat')
+    parser.add_argument('--end', type=int, default=default_end, help='Indexul de final pentru segmentul analizat')
+    parser.add_argument('--fs', type=int, default=default_fs, help='Frecvența de eșantionare (Hz)')
+    parser.add_argument('--save', type=lambda x: (str(x).lower() == 'true'), default=default_save, help='Salvează graficele în directorul grafice/ (default: True)')
     args = parser.parse_args()
 
     channel_sample, record_name = load_ecg_channel(
