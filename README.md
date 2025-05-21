@@ -73,4 +73,5 @@ python app.py --path physionet.org/files/chfdb/1.0.0/ --record chf02 --channel 1
 
 ## Autor
 
-Cristi Miloiu
+Cristi Miloiu - 442A
+Duta Florin - 442A
