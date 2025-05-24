@@ -121,6 +121,7 @@ python3 app.py --run_all_records True
 └── requirements.txt
 ```
 
+
 ## Autori
 
 Cristi Miloiu - 442A
