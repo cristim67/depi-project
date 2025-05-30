@@ -1,7 +1,6 @@
 import argparse
 import os
 import sys
-import uuid
 from typing import Tuple
 
 import matplotlib.pyplot as plt
